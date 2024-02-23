@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  db:
+    build:
+      context: ./db
+      dockerfile: ./Dockerfile
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "!A2s3d4f"
+      MYSQL_DATABASE: wordpress
+    networks:
+      - wordpress
+    healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-u", "root", "--password=!A2s3d4f", "-h", "localhost"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - 8025:8025
+    networks:
+      - wordpress
+
+  wordpress:
+    build:
+      context: ./srv
+      dockerfile: ./Dockerfile
+      args:
+        - GIT_USERNAME=Patryk Dumin
+        - GIT_EMAIL=patrykom01@gmail.com
+        - DB_NAME=wordpress
+        - DB_PASS=!A2s3d4f
+        - DB_HOST=db
+        - SITE_URL=wordpress.local
+        - SITE_NAME=Wordpress Starter
+        - SMTP_SERVER=mailhog
+    image: srv
+    restart: always
+    depends_on:
+      - db
+      - mailhog
+    networks:
+      - wordpress
+    ports:
+      - 8080:80
+      - 8443:443
+      - 9003:9003
+    volumes:
+      - ./src:/var/www/html/wp-content
+volumes:
+  db_data:
+networks:
+  wordpress:
