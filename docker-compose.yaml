@@ -9,12 +9,12 @@ services:
       - db_data:/var/lib/mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: "!A2s3d4f"
-      MYSQL_DATABASE: wordpress
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
     networks:
       - wordpress
     healthcheck:
-        test: ["CMD", "mysqladmin", "ping", "-u", "root", "--password=!A2s3d4f", "-h", "localhost"]
+        test: ["CMD", "mysqladmin", "ping", "-u", "${DB_USER}", "--password=${DB_PASS}", "-h", "localhost"]
         interval: 30s
         timeout: 10s
         retries: 5
@@ -31,14 +31,24 @@ services:
       context: ./srv
       dockerfile: ./Dockerfile
       args:
-        - GIT_USERNAME=Patryk Dumin
-        - GIT_EMAIL=patrykom01@gmail.com
-        - DB_NAME=wordpress
-        - DB_PASS=!A2s3d4f
-        - DB_HOST=db
-        - SITE_URL=wordpress.local
-        - SITE_NAME=Wordpress Starter
-        - SMTP_SERVER=mailhog
+        - GIT_USERNAME=${GIT_USERNAME}
+        - GIT_EMAIL=${GIT_EMAIL}
+        - NODE_VERSION=${NODE_VERSION}
+        - DB_NAME=${DB_NAME}
+        - DB_USER=${DB_USER}
+        - DB_PASS=${DB_PASS}
+        - DB_HOST=${DB_HOST}
+        - WP_LOCALE=${WP_LOCALE}
+        - WP_VERSION=${WP_VERSION}
+        - SITE_URL=${SITE_URL}
+        - SITE_NAME=${SITE_NAME}
+        - ADMIN_NAME=${ADMIN_NAME}
+        - ADMIN_PASS=${ADMIN_PASS}
+        - ADMIN_EMAIL=${ADMIN_EMAIL}
+        - SMTP_SERVER=${SMTP_SERVER}
+        - SMTP_PORT=${SMTP_PORT}
+        - PHP_EXECUTION_TIME=${PHP_EXECUTION_TIME}
+        - PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT}
     image: srv
     restart: always
     depends_on:
