@@ -8,6 +8,8 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     restart: always
+    ports:
+      - "${DB_PORT}:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASS}
       MYSQL_DATABASE: ${DB_NAME}
@@ -22,7 +24,7 @@ services:
   mailhog:
     image: mailhog/mailhog
     ports:
-      - 8025:8025
+      - ${SMTP_PORT}:8025
     networks:
       - wordpress
 
@@ -46,7 +48,7 @@ services:
         - ADMIN_PASS=${ADMIN_PASS}
         - ADMIN_EMAIL=${ADMIN_EMAIL}
         - SMTP_SERVER=${SMTP_SERVER}
-        - SMTP_PORT=${SMTP_PORT}
+        - SMTP_PORT=${PHP_SMTP_PORT}
         - PHP_EXECUTION_TIME=${PHP_EXECUTION_TIME}
         - PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT}
     image: srv
@@ -57,11 +59,14 @@ services:
     networks:
       - wordpress
     ports:
-      - 8080:80
-      - 8443:443
-      - 9003:9003
+      - ${HTTP_PORT}:80
+      - ${HTTPS_PORT}:443
+      - ${DEBUG_PORT}:9003
     volumes:
-      - ./src:/var/www/html/wp-content
+      - ./src/plugins:/var/www/html/wp-content/plugins
+      - ./src/themes:/var/www/html/wp-content/themes
+      - ./src/uploads:/var/www/html/wp-content/uploads
+      - ./srv/wordpress:/var/www/html
 volumes:
   db_data:
 networks:

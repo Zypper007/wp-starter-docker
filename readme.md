@@ -32,4 +32,5 @@ As I am working on Windows, I will guide you on the process specific to this pla
 3. Set up port forwarding. You can use [netsh portproxy](https://learn.microsoft.com/en-us/windows-server/networking/technologies/netsh/netsh-interface-portproxy) or a tool like [PortProxy GUI](https://github.com/zmjack/PortProxyGUI). Redirect the domain to the assigned port.
 
 ## Configuration
-TODO
+The configuration is locate in `.env` file.
+The startup.sh define what do on first installation

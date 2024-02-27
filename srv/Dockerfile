@@ -93,13 +93,6 @@ RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - \
   && chmod +x wp-cli.phar \
   && mv wp-cli.phar /usr/local/bin/wp
 
-# download wordpress
-WORKDIR /var/www/html/
-
-COPY ./wordpress/dev-config.php .
-RUN wp core download --locale=${WP_LOCALE} --version=${WP_VERSION} --allow-root
-RUN tar -czvf wp-content.tar.gz ./wp-content
-
 # ssl
 WORKDIR /etc
 
@@ -129,5 +122,9 @@ RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini" \
 
 
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY ./startup.sh /usr/local/bin/startup.sh
+
 WORKDIR /var/www/html/
+COPY ./wordpress/dev-config.php .
+
 ENTRYPOINT [ "entrypoint.sh" ]

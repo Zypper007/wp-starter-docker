@@ -1,1 +1,3 @@
 *.pem
+srv/wordpress/*
+! srv/wordpress/dev-config.php
